@@ -792,10 +792,7 @@
               <span v-if="habit.isRecurring">Every {{ habit.recurrence }} day{{ habit.recurrence > 1 ? 's' : '' }}</span>
               <span v-else>One-time task</span>
               <div class="habit-last-done">
-                <span v-if="habit.lastCompleted">
-                  Last done {{ Math.floor((Date.now() - habit.lastCompleted) / (1000 * 60 * 60 * 24)) === 0 ? 'today' : Math.floor((Date.now() - habit.lastCompleted) / (1000 * 60 * 60 * 24)) + ' day' + (Math.floor((Date.now() - habit.lastCompleted) / (1000 * 60 * 60 * 24)) > 1 ? 's' : '') + ' ago' }}
-                </span>
-                <span v-else>Never done</span>
+                Last done {{ getLastDoneText(habit.lastCompleted) }}
               </div>
             </div>
           </div>
@@ -832,10 +829,7 @@
               <span v-if="habit.isRecurring">Every {{ habit.recurrence }} day{{ habit.recurrence > 1 ? 's' : '' }}</span>
               <span v-else>One-time task</span>
               <div class="habit-last-done">
-                <span v-if="habit.lastCompleted">
-                  Last done {{ Math.floor((Date.now() - habit.lastCompleted) / (1000 * 60 * 60 * 24)) === 0 ? 'yesterday' : Math.floor((Date.now() - habit.lastCompleted) / (1000 * 60 * 60 * 24))+1 + ' day' + (Math.floor((Date.now() - habit.lastCompleted) / (1000 * 60 * 60 * 24)) > 1 ? 's' : '') + ' ago' }}
-                </span>
-                <span v-else>Never done</span>
+                Last done {{ getLastDoneText(habit.lastCompleted) }}
               </div>
             </div>
             <div class="habit-progress">
@@ -884,7 +878,7 @@
         const editingId = ref(null);
         const editingName = ref('');
         const editingRecurrence = ref(1);
-        const darkMode = ref(false);
+        const darkMode = ref(true);
 
         const displayedHabits = computed(() => {
           return habits.value.filter(h => h.archived === (showArchived.value ? 1 : 0));
@@ -1100,6 +1094,27 @@
           editingId.value = null;
         };
 
+        const getLastDoneText = (lastCompleted) => {
+          if (!lastCompleted) return 'Never done';
+          
+          // Subtract 4 hours from both timestamps to shift the day boundary
+          const adjustedCompleted = lastCompleted - (4 * 60 * 60 * 1000);
+          const adjustedNow = Date.now() - (4 * 60 * 60 * 1000);
+          
+          // Get the calendar day for each (normalized to midnight)
+          const completedDate = new Date(adjustedCompleted);
+          const nowDate = new Date(adjustedNow);
+          
+          completedDate.setHours(0, 0, 0, 0);
+          nowDate.setHours(0, 0, 0, 0);
+          
+          const daysDiff = Math.round((nowDate - completedDate) / (1000 * 60 * 60 * 24));
+          
+          if (daysDiff === 0) return 'today';
+          if (daysDiff === 1) return 'yesterday';
+          return `${daysDiff} days ago`;
+        };
+
         const getProgressColor = (habit) => {
           // Determine which colors to use based on theme
           const isDarkMode = darkMode.value;
@@ -1179,6 +1194,7 @@
           cancelEdit,
           getTimeRemaining,
           getProgressColor,
+          getLastDoneText,
           toggleDarkMode
         };
       }

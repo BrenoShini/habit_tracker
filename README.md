@@ -1,128 +1,23 @@
-# Habit Tracker
+# Do.it - Gerenciamento e Evolução de Rastreador de Hábitos
 
-A simple full-stack web application for tracking daily habits with visual feedback and detailed logging.
+O Do.it é um projeto de evolução de software baseado no repositório open-source habit_tracker. Este trabalho é desenvolvido como parte da disciplina SSC0535 - Gerência de Configuração, Evolução e Manutenção de Software no ICMC-USP.
 
-99% vibecoded. Shoutout to demon tech!
+O objetivo central é transformar uma ferramenta de rastreio básico em um sistema de alta retenção, utilizando técnicas de gamificação e uma estrutura de dados voltada para metas quantificáveis.
 
-## Features
+## Funcionalidades em Desenvolvimento
 
-- **Add Habits**: Create new habits with custom recurrence (in days)
-- **Recurring vs Single Tasks**: 
-  - Recurring habits reset after completion
-  - Single tasks are archived when completed
-- **Visual Feedback**: 
-  - Red buttons = habit is due
-  - Green buttons = habit is done
-  - Progress bar shows time until next due
-- **Editable Habits**: Double-click to edit habit name and recurrence
-- **Archive System**: Completed single tasks automatically go to archive
-- **Activity Logging**: All changes logged to CSV file (name edits, completions, etc.)
-- **Persistent Storage**: SQLite database stores all habit data
+Diferente de rastreadores convencionais, o Do.it foca nos seguintes pilares de evolução:
 
-## Tech Stack
+* Registro Dual: Gestão de hábitos positivos (incorporar) e hábitos nocivos (reduzir).
+* Metas Quantificáveis: Implementação de objetivos mensuráveis atrelados a valores numéricos.
+* Gamificação: Sistema de recompensas e troféus baseado na manutenção de ofensivas (streaks).
+* Persistência de Dados: Histórico visual via calendário e exportação de logs em CSV.
+* Gestão de Exceções: Funcionalidade para pausa temporária no rastreio sem perda de progresso histórico.
 
-- **Frontend**: Vue.js 3 (CDN version)
-- **Backend**: Node.js + Express
-- **Database**: SQLite3
-- **Logging**: CSV file
+## Arquitetura e Tecnologias
 
-## Setup & Running
-
-1. Install Node.js if not already installed
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-
-3. Start the server:
-   ```bash
-   npm start
-   ```
-
-4. Open your browser and navigate to `http://localhost:3000`
-
-## Scripts
-
-- **Test Habit**: Quickly add a nearly-due test habit for notification/progress bar testing
-  ```bash
-  npm run test-habit
-  ```
-- **Reset Database**: Remove all habits and logs for a clean slate
-  ```bash
-  npm run reset-db
-  ```
-
-## How It Works
-
-### Habit Types
-- **Recurring Habits**: Resets after you complete it, based on your recurrence interval
-- **One-time Tasks**: Gets archived after completion
-
-### Progress Bar
-Shows the time elapsed since last completion as a percentage of the recurrence interval:
-- 0% = just completed
-- 100% = due for completion
-
-### Editing Habits
-Double-click any habit to edit:
-- Change the name
-- Change the recurrence period
-
-### Archiving
-- Single tasks automatically archive when marked complete
-- View archived tasks in the "Archived" tab
-- Delete archived tasks permanently
-
-## Activity Log
-
-All changes are logged to `logs.csv` including:
-- Habit creation
-- Completion times
-- Name and recurrence edits
-- Archival events
-- Deletions
-
-## API Endpoints
-
-- `GET /api/habits?archived=false` - Get active habits
-- `GET /api/habits?archived=true` - Get archived habits
-- `POST /api/habits` - Create a new habit
-- `PUT /api/habits/:id` - Edit habit name/recurrence
-- `POST /api/habits/:id/complete` - Mark habit as completed
-- `DELETE /api/habits/:id` - Delete a habit
-
-## Docker Deployment
-
-You can run this app in a containerized environment using Docker. A pre-built image is available from GitHub Container Registry.
-
-### Pull the image from GitHub Container Registry
-```bash
-docker pull ghcr.io/rkdover/habit_tracker:latest
-```
-
-### Run the container (default port 3000)
-```bash
-docker run -d -p 3000:3000 --name habit_tracker ghcr.io/rkdover/habit_tracker:latest
-```
-
-### Run on a custom port (e.g. 8080)
-```bash
-docker run -d -p 8080:8080 -e PORT=8080 --name habit_tracker ghcr.io/rkdover/habit_tracker:latest
-```
-
-### Run with persistent data (recommended)
-To keep your database and logs between container runs, mount a local folder (e.g. `./data`) to `/app/data` in the container:
-```bash
-docker run -d -p 3000:3000 -v $(pwd)/data:/app/data --name habit_tracker ghcr.io/rkdover/habit_tracker:latest
-```
-- Your SQLite database and logs will be stored in the `data/` folder on your host machine.
-- You can change the port and volume path as needed.
-
-> **Note:** Do not mount the entire `/app` directory, only `/app/data` for persistence.
-
-### Building locally (optional)
-If you prefer to build the image yourself:
-```bash
-docker build -t habit_tracker .
-docker run -d -p 3000:3000 -v $(pwd)/data:/app/data --name habit_tracker habit_tracker
-```
+* Frontend: Vue.js (Interface Responsiva)
+* Backend: Node.js com framework Express
+* Banco de Dados: SQLite
+* Conteinerização: Docker e Docker Compose
+* Qualidade de Código: Integração com SonarCloud para análise estática e segurança
